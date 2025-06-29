@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/fatih/color"
+	"github.com/ryosuke/git-branch-auto-remove/internal/config"
 	"github.com/ryosuke/git-branch-auto-remove/internal/git"
 	"github.com/spf13/cobra"
 )
@@ -14,10 +16,8 @@ import (
 var (
 	force  bool
 	merged bool
+	cfg    *config.Config
 )
-
-// Add a list of protected branches that should not be deleted.
-var protectedBranches = []string{"main", "master", "develop"}
 
 var rootCmd = &cobra.Command{
 	Use:   "git-branch-auto-remove",
@@ -32,7 +32,7 @@ func init() {
 
 // isProtected checks if a branch is in the protected list.
 func isProtected(branch string) bool {
-	for _, p := range protectedBranches {
+	for _, p := range cfg.ProtectedBranches {
 		if branch == p {
 			return true
 		}
@@ -41,13 +41,24 @@ func isProtected(branch string) bool {
 }
 
 func run(cmd *cobra.Command, args []string) {
+	var err error
+	cfg, err = config.LoadConfig()
+	if err != nil {
+		log.Fatalf(color.RedString("Error loading config: %v"), err)
+	}
+
+	// Check if it's a git repository
+	if _, err := git.GetGitRoot(); err != nil {
+		log.Fatalf(color.RedString("Error: %v"), err)
+	}
+
 	if err := git.Prune(); err != nil {
-		log.Fatalf("Error pruning remote branches: %v", err)
+		log.Fatalf(color.RedString("Error pruning remote branches: %v"), err)
 	}
 
 	goneBranches, err := git.GetGoneBranches()
 	if err != nil {
-		log.Fatalf("Error getting gone branches: %v", err)
+		log.Fatalf(color.RedString("Error getting gone branches: %v"), err)
 	}
 
 	// Filter out protected branches
@@ -59,13 +70,13 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	if len(branchesToRemove) == 0 {
-		fmt.Println("No branches to remove.")
+		fmt.Println(color.YellowString("No branches to remove."))
 		return
 	}
 
-	fmt.Println("The following branches are gone from the remote and can be removed:")
+	fmt.Println(color.YellowString("The following branches are gone from the remote and can be removed:"))
 	for _, branch := range branchesToRemove {
-		fmt.Printf("- %s\n", branch)
+		fmt.Printf("- %s\n", color.GreenString(branch))
 	}
 
 	if !force {
@@ -73,7 +84,7 @@ func run(cmd *cobra.Command, args []string) {
 		reader := bufio.NewReader(os.Stdin)
 		input, _ := reader.ReadString('\n')
 		if strings.TrimSpace(input) != "y" {
-			fmt.Println("Aborted.")
+			fmt.Println(color.YellowString("Aborted."))
 			return
 		}
 	}
@@ -85,16 +96,16 @@ func run(cmd *cobra.Command, args []string) {
 
 	for _, branch := range branchesToRemove {
 		if _, err := git.Run("branch", deleteCmd, branch); err != nil {
-			log.Printf("Failed to delete branch %s: %v", branch, err)
+			log.Printf(color.RedString("Failed to delete branch %s: %v"), branch, err)
 		} else {
-			fmt.Printf("Deleted branch %s\n", branch)
+			fmt.Printf(color.GreenString("Deleted branch %s\n"), branch)
 		}
 	}
 }
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		fmt.Println(color.RedString(err.Error()))
 		os.Exit(1)
 	}
 }
