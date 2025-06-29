@@ -16,6 +16,9 @@ var (
 	merged bool
 )
 
+// Add a list of protected branches that should not be deleted.
+var protectedBranches = []string{"main", "master", "develop"}
+
 var rootCmd = &cobra.Command{
 	Use:   "git-branch-auto-remove",
 	Short: "A CLI tool to remove local branches that are gone from the remote",
@@ -25,6 +28,16 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.Flags().BoolVar(&force, "force", false, "Force execute delete branches.")
 	rootCmd.Flags().BoolVarP(&merged, "merged", "D", false, "Delete merged branches.")
+}
+
+// isProtected checks if a branch is in the protected list.
+func isProtected(branch string) bool {
+	for _, p := range protectedBranches {
+		if branch == p {
+			return true
+		}
+	}
+	return false
 }
 
 func run(cmd *cobra.Command, args []string) {
@@ -37,13 +50,21 @@ func run(cmd *cobra.Command, args []string) {
 		log.Fatalf("Error getting gone branches: %v", err)
 	}
 
-	if len(goneBranches) == 0 {
+	// Filter out protected branches
+	var branchesToRemove []string
+	for _, branch := range goneBranches {
+		if !isProtected(branch) {
+			branchesToRemove = append(branchesToRemove, branch)
+		}
+	}
+
+	if len(branchesToRemove) == 0 {
 		fmt.Println("No branches to remove.")
 		return
 	}
 
 	fmt.Println("The following branches are gone from the remote and can be removed:")
-	for _, branch := range goneBranches {
+	for _, branch := range branchesToRemove {
 		fmt.Printf("- %s\n", branch)
 	}
 
@@ -62,7 +83,7 @@ func run(cmd *cobra.Command, args []string) {
 		deleteCmd = "-D"
 	}
 
-	for _, branch := range goneBranches {
+	for _, branch := range branchesToRemove {
 		if _, err := git.Run("branch", deleteCmd, branch); err != nil {
 			log.Printf("Failed to delete branch %s: %v", branch, err)
 		} else {
