@@ -1,4 +1,4 @@
-module github.com/ryosuke/git-branch-auto-remove
+module github.com/tkr53/git-branch-auto-remove
 
 go 1.24.2
 

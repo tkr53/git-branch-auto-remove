@@ -16,7 +16,7 @@ A CLI tool to automatically remove local Git branches that have been merged and 
 To install `git-branch-auto-remove`, make sure you have Go installed (Go 1.16 or higher is recommended).
 
 ```bash
-go install github.com/ryosuke/git-branch-auto-remove@latest
+go install github.com/tkr53/git-branch-auto-remove@latest
 ```
 
 This command will install the executable to your `$GOPATH/bin` (or `$GOBIN`) directory. Make sure this directory is in your system's `PATH`.

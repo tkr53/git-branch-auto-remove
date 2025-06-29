@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/ryosuke/git-branch-auto-remove/internal/config"
-	"github.com/ryosuke/git-branch-auto-remove/internal/git"
 	"github.com/spf13/cobra"
+	"github.com/tkr53/git-branch-auto-remove/internal/config"
+	"github.com/tkr53/git-branch-auto-remove/internal/git"
 )
 
 var (

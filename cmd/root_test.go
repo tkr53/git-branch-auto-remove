@@ -7,9 +7,9 @@ import (
 	"testing"
 
 	"bou.ke/monkey"
-	"github.com/ryosuke/git-branch-auto-remove/internal/config"
-	"github.com/ryosuke/git-branch-auto-remove/internal/git"
 	"github.com/stretchr/testify/assert"
+	"github.com/tkr53/git-branch-auto-remove/internal/config"
+	"github.com/tkr53/git-branch-auto-remove/internal/git"
 )
 
 func TestIsProtected(t *testing.T) {
