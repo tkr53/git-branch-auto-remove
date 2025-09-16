@@ -1,4 +1,4 @@
-# ghar (Git brancH Auto Remove)
+# gbar (Git Branch Auto Remove)
 
 A CLI tool to automatically remove local Git branches that have been merged and deleted from the remote repository.
 
@@ -13,10 +13,10 @@ A CLI tool to automatically remove local Git branches that have been merged and 
 
 ## Installation
 
-To install `ghar`, make sure you have Go installed (Go 1.16 or higher is recommended).
+To install `gbar`, make sure you have Go installed (Go 1.16 or higher is recommended).
 
 ```bash
-go install github.com/tkr53/ghar@latest
+go install github.com/tkr53/gbar@latest
 ```
 
 This command will install the executable to your `$GOPATH/bin` (or `$GOBIN`) directory. Make sure this directory is in your system's `PATH`.
@@ -26,7 +26,7 @@ This command will install the executable to your `$GOPATH/bin` (or `$GOBIN`) dir
 Run the tool from within your Git repository:
 
 ```bash
-ghar
+gbar
 ```
 
 By default, this command will perform a dry-run, listing the branches that *would be* removed without actually deleting them. It will also prompt for confirmation before any deletion.
@@ -36,20 +36,20 @@ By default, this command will perform a dry-run, listing the branches that *woul
 - `--force` or `-f`: Force execute deletion of branches without confirmation prompt.
 
   ```bash
-  ghar --force
+  gbar --force
   ```
 
 - `--merged` or `-D`: Delete branches that have been merged into the current branch (similar to `git branch -d` for merged branches).
 
   ```bash
-  ghar --merged
+  gbar --merged
   ```
 
 ### Configuration
 
-You can configure `ghar` by creating a `.ghar.yml` file in your project's root directory or in your home directory.
+You can configure `gbar` by creating a `.gbar.yml` file in your project's root directory or in your home directory.
 
-Example `.ghar.yml`:
+Example `.gbar.yml`:
 
 ```yaml
 protected_branches:

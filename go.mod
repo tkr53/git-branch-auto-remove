@@ -1,4 +1,4 @@
-module github.com/tkr53/ghar
+module github.com/tkr53/gbar
 
 go 1.24.2
 

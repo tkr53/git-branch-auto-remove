@@ -9,8 +9,8 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
-	"github.com/tkr53/ghar/internal/config"
-	"github.com/tkr53/ghar/internal/git"
+	"github.com/tkr53/gbar/internal/config"
+	"github.com/tkr53/gbar/internal/git"
 )
 
 var (
@@ -20,7 +20,7 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "ghar",
+	Use:   "gbar",
 	Short: "A CLI tool to remove local branches that are gone from the remote",
 	Run: func(cmd *cobra.Command, args []string) {
 		run(cmd, args, &git.OSCommandExecutor{}, &config.ViperConfigLoader{})

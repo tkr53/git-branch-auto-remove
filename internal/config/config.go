@@ -19,7 +19,7 @@ type ConfigLoader interface {
 // ViperConfigLoader implements ConfigLoader using Viper.
 type ViperConfigLoader struct{}
 
-// LoadConfig reads configuration from .ghar.yml.
+// LoadConfig reads configuration from .gbar.yml.
 func (l *ViperConfigLoader) LoadConfig() (*Config, error) {
 	cfg := &Config{}
 
@@ -27,7 +27,7 @@ func (l *ViperConfigLoader) LoadConfig() (*Config, error) {
 	viper.SetDefault("protected_branches", []string{"main", "master", "develop"})
 
 	// Set config file name and type
-	viper.SetConfigName(".ghar")
+	viper.SetConfigName(".gbar")
 	viper.SetConfigType("yaml")
 
 	// Add config paths: current directory and user's home directory

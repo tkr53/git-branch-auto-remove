@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tkr53/ghar/internal/config"
+	"github.com/tkr53/gbar/internal/config"
 )
 
 type MockCommandExecutor struct {
