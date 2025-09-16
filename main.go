@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/tkr53/git-branch-auto-remove/cmd"
+	"github.com/tkr53/ghar/cmd"
 )
 
 func main() {

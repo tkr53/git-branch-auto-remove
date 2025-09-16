@@ -11,15 +11,23 @@ type Config struct {
 	ProtectedBranches []string `mapstructure:"protected_branches"`
 }
 
-// LoadConfig reads configuration from .git-branch-auto-remove.yml.
-func LoadConfig() (*Config, error) {
+// ConfigLoader defines the interface for loading configuration.
+type ConfigLoader interface {
+	LoadConfig() (*Config, error)
+}
+
+// ViperConfigLoader implements ConfigLoader using Viper.
+type ViperConfigLoader struct{}
+
+// LoadConfig reads configuration from .ghar.yml.
+func (l *ViperConfigLoader) LoadConfig() (*Config, error) {
 	cfg := &Config{}
 
 	// Set default values
 	viper.SetDefault("protected_branches", []string{"main", "master", "develop"})
 
 	// Set config file name and type
-	viper.SetConfigName(".git-branch-auto-remove")
+	viper.SetConfigName(".ghar")
 	viper.SetConfigType("yaml")
 
 	// Add config paths: current directory and user's home directory

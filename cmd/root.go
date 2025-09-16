@@ -9,8 +9,8 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
-	"github.com/tkr53/git-branch-auto-remove/internal/config"
-	"github.com/tkr53/git-branch-auto-remove/internal/git"
+	"github.com/tkr53/ghar/internal/config"
+	"github.com/tkr53/ghar/internal/git"
 )
 
 var (
@@ -20,9 +20,11 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "git-branch-auto-remove",
+	Use:   "ghar",
 	Short: "A CLI tool to remove local branches that are gone from the remote",
-	Run:   run,
+	Run: func(cmd *cobra.Command, args []string) {
+		run(cmd, args, &git.OSCommandExecutor{}, &config.ViperConfigLoader{})
+	},
 }
 
 func init() {
@@ -40,23 +42,25 @@ func isProtected(branch string) bool {
 	return false
 }
 
-func run(cmd *cobra.Command, args []string) {
+func run(cmd *cobra.Command, args []string, executor git.CommandExecutor, configLoader config.ConfigLoader) {
 	var err error
-	cfg, err = config.LoadConfig()
+		cfg, err = configLoader.LoadConfig()
 	if err != nil {
 		log.Fatalf(color.RedString("Error loading config: %v"), err)
 	}
 
+	
+
 	// Check if it's a git repository
-	if _, err := git.GetGitRoot(); err != nil {
+	if _, err := git.GetGitRoot(executor); err != nil {
 		log.Fatalf(color.RedString("Error: %v"), err)
 	}
 
-	if err := git.Prune(); err != nil {
+	if err := git.Prune(executor); err != nil {
 		log.Fatalf(color.RedString("Error pruning remote branches: %v"), err)
 	}
 
-	goneBranches, err := git.GetGoneBranches()
+	goneBranches, err := git.GetGoneBranches(executor);
 	if err != nil {
 		log.Fatalf(color.RedString("Error getting gone branches: %v"), err)
 	}
@@ -95,7 +99,7 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	for _, branch := range branchesToRemove {
-		if _, err := git.Run("branch", deleteCmd, branch); err != nil {
+		if _, err := git.Run(executor, "branch", deleteCmd, branch); err != nil {
 			log.Printf(color.RedString("Failed to delete branch %s: %v"), branch, err)
 		} else {
 			fmt.Printf(color.GreenString("Deleted branch %s\n"), branch)

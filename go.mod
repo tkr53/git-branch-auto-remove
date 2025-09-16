@@ -1,9 +1,8 @@
-module github.com/tkr53/git-branch-auto-remove
+module github.com/tkr53/ghar
 
 go 1.24.2
 
 require (
-	bou.ke/monkey v1.0.2
 	github.com/fatih/color v1.18.0
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
